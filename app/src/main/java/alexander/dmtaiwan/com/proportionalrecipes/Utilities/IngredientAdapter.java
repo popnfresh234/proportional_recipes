@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import alexander.dmtaiwan.com.proportionalrecipes.Models.Recipe;
+import alexander.dmtaiwan.com.proportionalrecipes.Models.Ingredient;
 import alexander.dmtaiwan.com.proportionalrecipes.R;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -16,13 +16,13 @@ import butterknife.ButterKnife;
 /**
  * Created by lenovo on 3/25/2016.
  */
-public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
+public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.ViewHolder> {
 
-    private List<Recipe> mRecipes;
+    private List<Ingredient> mIngredients;
     private View mEmptyView;
     private RecyclerClickListener mClickListener;
 
-    public RecipeAdapter(View emptyView, RecyclerClickListener listener) {
+    public IngredientAdapter(View emptyView, RecyclerClickListener listener) {
         this.mEmptyView = emptyView;
         this.mClickListener = listener;
     }
@@ -35,14 +35,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Recipe recipe = mRecipes.get(position);
-        holder.mRecipeTitle.setText(recipe.getName());
+        Ingredient ingredient = mIngredients.get(position);
+        holder.mRecipeTitle.setText(ingredient.getName());
     }
 
     @Override
     public int getItemCount() {
-        if (mRecipes != null) {
-            return mRecipes.size();
+        if (mIngredients != null) {
+            return mIngredients.size();
         }else return 0;
     }
 
@@ -61,20 +61,20 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
-            Recipe recipe = mRecipes.get(position);
-            mClickListener.onRecyclerClick(recipe);
+            Ingredient ingredient = mIngredients.get(position);
+            mClickListener.onRecyclerClick(ingredient);
         }
     }
 
-    public void updateData(List<Recipe> recipes) {
-        if(recipes!= null) {
-            mRecipes = recipes;
+    public void updateData(List<Ingredient> ingredients) {
+        if(ingredients!= null) {
+            mIngredients = ingredients;
             notifyDataSetChanged();
-            mEmptyView.setVisibility(mRecipes.size() == 0 ? View.VISIBLE : View.GONE);
+            mEmptyView.setVisibility(mIngredients.size() == 0 ? View.VISIBLE : View.GONE);
         }
     }
 
     public interface RecyclerClickListener {
-        void onRecyclerClick(Recipe recipe);
+        void onRecyclerClick(Ingredient ingredient);
     }
 }

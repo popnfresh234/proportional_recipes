@@ -8,20 +8,20 @@ import android.os.Parcelable;
  */
 public class Ingredient implements Parcelable {
 
-    private String ingredient;
+    private String name;
     private float count;
 
-    public Ingredient(String ingredient, float count) {
-        this.ingredient = ingredient;
+    public Ingredient(String name, float count) {
+        this.name = name;
         this.count = count;
     }
 
-    public String getIngredient() {
-        return ingredient;
+    public String getName() {
+        return name;
     }
 
-    public void setIngredient(String ingredient) {
-        this.ingredient = ingredient;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public float getCount() {
@@ -33,7 +33,7 @@ public class Ingredient implements Parcelable {
     }
 
     protected Ingredient(Parcel in) {
-        ingredient = in.readString();
+        name = in.readString();
         count = in.readFloat();
     }
 
@@ -44,7 +44,7 @@ public class Ingredient implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(ingredient);
+        dest.writeString(name);
         dest.writeFloat(count);
     }
 

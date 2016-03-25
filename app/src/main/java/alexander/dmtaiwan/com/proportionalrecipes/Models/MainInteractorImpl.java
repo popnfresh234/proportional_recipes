@@ -2,6 +2,7 @@ package alexander.dmtaiwan.com.proportionalrecipes.Models;
 
 import android.content.Context;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,7 +20,13 @@ public class MainInteractorImpl implements MainInteractor{
 
     @Override
     public void fetchData() {
-
+        List<Recipe> recipeList = new ArrayList<Recipe>();
+        for (int i = 0; i < 5; i++) {
+            String name = "Recipe " + String.valueOf(i);
+            Recipe recipe = new Recipe(name, null);
+            recipeList.add(recipe);
+        }
+        listener.onResult(null);
     }
 
     public interface MainInteractorListener {
