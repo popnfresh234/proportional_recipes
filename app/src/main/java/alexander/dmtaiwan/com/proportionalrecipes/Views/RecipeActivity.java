@@ -64,10 +64,10 @@ public class RecipeActivity extends AppCompatActivity implements RecipeView, Ing
     }
 
     @Override
-    public void onRecyclerTextChanged(Float enteredValue, int position) {
+    public void onRecyclerTextChanged(double enteredValue, int position) {
         List<Ingredient> ingredientList = mAdapter.getIngredients();
         Ingredient testIngredient = ingredientList.get(position);
-        float ratio = enteredValue / testIngredient.getCount();
+        double ratio = enteredValue / testIngredient.getCount();
         for (int i = 0; i < ingredientList.size(); i++) {
             Ingredient ingredient = ingredientList.get(i);
             if (i != position) {

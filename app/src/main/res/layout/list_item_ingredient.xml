@@ -8,6 +8,7 @@
 
     <TextView
         android:id="@+id/text_view_ingredient"
+        android:textSize="10sp"
         tools:text="Carrots"
         android:layout_width="0dp"
         android:layout_weight="2"
@@ -23,7 +24,7 @@
     <TextView
         android:id="@+id/text_view_units"
         android:layout_width="0dp"
-        android:layout_weight="2"
+        android:layout_weight="1"
         android:layout_height="wrap_content" />
 
     <EditText

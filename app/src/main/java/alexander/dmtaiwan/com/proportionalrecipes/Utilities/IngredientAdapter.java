@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import alexander.dmtaiwan.com.proportionalrecipes.Models.Ingredient;
@@ -26,6 +28,7 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
     private RecyclerClickListener mClickListener;
     private RecyclerTextChangedListener mTextChangedListener;
     private Context mContext;
+    private DecimalFormat mDecimalFormat = new DecimalFormat("0");
 
 
     public IngredientAdapter(View emptyView, RecyclerClickListener listener, RecyclerTextChangedListener textListener, Context context) {
@@ -47,7 +50,9 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
         holder.mIngredientTitle.setText(ingredient.getName());
         holder.mIngredientCount.setText(String.valueOf(ingredient.getCount()));
         if (ingredient.getProportionalCount() != 0.0f) {
-            holder.mProportionalCount.setText(String.valueOf(ingredient.getProportionalCount()));
+            mDecimalFormat.setRoundingMode(RoundingMode.UP);
+            String formattedCount = mDecimalFormat.format(ingredient.getProportionalCount());
+            holder.mProportionalCount.setText(formattedCount);
         }
     }
 
@@ -84,7 +89,7 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
         public void onClick(View v) {
             if (v.getId() == R.id.button_ok) {
                 String input = mProportionalCount.getText().toString();
-                mTextChangedListener.onRecyclerTextChanged(Float.parseFloat(input), getAdapterPosition());
+                mTextChangedListener.onRecyclerTextChanged(Double.parseDouble(input), getAdapterPosition());
             }
         }
 
@@ -104,7 +109,7 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
     }
 
     public interface RecyclerTextChangedListener{
-        void onRecyclerTextChanged(Float enteredValue, int position);
+        void onRecyclerTextChanged(double enteredValue, int position);
     }
 
     public List<Ingredient> getIngredients() {

@@ -9,12 +9,12 @@ import android.os.Parcelable;
 public class Ingredient implements Parcelable {
 
     private String name;
-    private float count;
+    private double count;
 
     private String unit;
-    private float proportionalCount;
+    private double proportionalCount;
 
-    public Ingredient(String name, float count) {
+    public Ingredient(String name, double count) {
         this.name = name;
         this.count = count;
     }
@@ -27,11 +27,11 @@ public class Ingredient implements Parcelable {
         this.name = name;
     }
 
-    public float getCount() {
+    public double getCount() {
         return count;
     }
 
-    public void setCount(float count) {
+    public void setCount(double count) {
         this.count = count;
     }
 
@@ -43,19 +43,19 @@ public class Ingredient implements Parcelable {
         this.unit = unit;
     }
 
-    public float getProportionalCount() {
+    public double getProportionalCount() {
         return proportionalCount;
     }
 
-    public void setProportionalCount(float proportionalCount) {
+    public void setProportionalCount(double proportionalCount) {
         this.proportionalCount = proportionalCount;
     }
 
     protected Ingredient(Parcel in) {
         name = in.readString();
-        count = in.readFloat();
+        count = in.readDouble();
         unit = in.readString();
-        proportionalCount = in.readFloat();
+        proportionalCount = in.readDouble();
 ;
     }
 
@@ -67,9 +67,9 @@ public class Ingredient implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
-        dest.writeFloat(count);
+        dest.writeDouble(count);
         dest.writeString(unit);
-        dest.writeFloat(proportionalCount);
+        dest.writeDouble(proportionalCount);
     }
 
     @SuppressWarnings("unused")
