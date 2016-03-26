@@ -2,11 +2,10 @@ package alexander.dmtaiwan.com.proportionalrecipes.Utilities;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -26,7 +25,6 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
     private View mEmptyView;
     private RecyclerClickListener mClickListener;
     private RecyclerTextChangedListener mTextChangedListener;
-    private Boolean mOnBind;
     private Context mContext;
 
 
@@ -48,11 +46,9 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
         Ingredient ingredient = mIngredients.get(position);
         holder.mIngredientTitle.setText(ingredient.getName());
         holder.mIngredientCount.setText(String.valueOf(ingredient.getCount()));
-        mOnBind = true;
         if (ingredient.getProportionalCount() != 0.0f) {
             holder.mProportionalCount.setText(String.valueOf(ingredient.getProportionalCount()));
         }
-        mOnBind = false;
     }
 
     @Override
@@ -62,7 +58,7 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
         }else return 0;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, TextWatcher {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         @Bind(R.id.text_view_ingredient)
         TextView mIngredientTitle;
@@ -73,36 +69,26 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
         @Bind(R.id.edit_text_proportional_count)
         EditText mProportionalCount;
 
+        @Bind(R.id.button_ok)
+        Button mOkButton;
+
 
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(this);
-            mProportionalCount.addTextChangedListener(this);
+            mOkButton.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            int position = getAdapterPosition();
-            Ingredient ingredient = mIngredients.get(position);
-            mClickListener.onRecyclerClick(ingredient);
-        }
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+            if (v.getId() == R.id.button_ok) {
+                String input = mProportionalCount.getText().toString();
+                mTextChangedListener.onRecyclerTextChanged(Float.parseFloat(input), getAdapterPosition());
+            }
         }
 
 
-        @Override
-        public void afterTextChanged(Editable s) {
-        }
     }
 
     public void updateData(List<Ingredient> ingredients) {

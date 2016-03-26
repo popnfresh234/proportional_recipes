@@ -66,14 +66,17 @@ public class RecipeActivity extends AppCompatActivity implements RecipeView, Ing
     @Override
     public void onRecyclerTextChanged(Float enteredValue, int position) {
         List<Ingredient> ingredientList = mAdapter.getIngredients();
+        Ingredient testIngredient = ingredientList.get(position);
+        float ratio = enteredValue / testIngredient.getCount();
         for (int i = 0; i < ingredientList.size(); i++) {
             Ingredient ingredient = ingredientList.get(i);
-            if (i == position) {
+            if (i != position) {
+                ingredient.setProportionalCount(ingredient.getCount() * ratio);
+                ingredientList.set(i, ingredient);
+            }else {
                 ingredient.setProportionalCount(enteredValue);
-            } else {
-                ingredient.setProportionalCount(Float.parseFloat(String.valueOf(i)));
+                ingredientList.set(i, ingredient);
             }
-            ingredientList.set(i, ingredient);
         }
         mAdapter.updateData(ingredientList);
     }

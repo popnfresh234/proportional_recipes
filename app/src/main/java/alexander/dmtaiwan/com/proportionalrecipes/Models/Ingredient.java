@@ -11,8 +11,7 @@ public class Ingredient implements Parcelable {
     private String name;
     private float count;
 
-
-
+    private String unit;
     private float proportionalCount;
 
     public Ingredient(String name, float count) {
@@ -36,6 +35,14 @@ public class Ingredient implements Parcelable {
         this.count = count;
     }
 
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
     public float getProportionalCount() {
         return proportionalCount;
     }
@@ -47,7 +54,9 @@ public class Ingredient implements Parcelable {
     protected Ingredient(Parcel in) {
         name = in.readString();
         count = in.readFloat();
+        unit = in.readString();
         proportionalCount = in.readFloat();
+;
     }
 
     @Override
@@ -59,6 +68,7 @@ public class Ingredient implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeFloat(count);
+        dest.writeString(unit);
         dest.writeFloat(proportionalCount);
     }
 
