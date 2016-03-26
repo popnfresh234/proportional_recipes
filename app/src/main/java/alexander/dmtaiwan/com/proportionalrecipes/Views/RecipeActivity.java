@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Alexander on 3/26/2016.
  */
-public class RecipeActivity extends AppCompatActivity implements RecipeView, IngredientAdapter.RecyclerClickListener{
+public class RecipeActivity extends AppCompatActivity implements RecipeView, IngredientAdapter.RecyclerClickListener,IngredientAdapter.RecyclerTextChangedListener{
 
     private String LOG_TAG = RecipeActivity.class.getSimpleName();
 
@@ -39,7 +39,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeView, Ing
         ButterKnife.bind(this);
 
 
-        mAdapter = new IngredientAdapter(mEmptyView, this);
+        mAdapter = new IngredientAdapter(mEmptyView, this, this, this);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(llm);
@@ -61,5 +61,20 @@ public class RecipeActivity extends AppCompatActivity implements RecipeView, Ing
     @Override
     public void onRecyclerClick(Ingredient ingredient) {
 
+    }
+
+    @Override
+    public void onRecyclerTextChanged(Float enteredValue, int position) {
+        List<Ingredient> ingredientList = mAdapter.getIngredients();
+        for (int i = 0; i < ingredientList.size(); i++) {
+            Ingredient ingredient = ingredientList.get(i);
+            if (i == position) {
+                ingredient.setProportionalCount(enteredValue);
+            } else {
+                ingredient.setProportionalCount(Float.parseFloat(String.valueOf(i)));
+            }
+            ingredientList.set(i, ingredient);
+        }
+        mAdapter.updateData(ingredientList);
     }
 }

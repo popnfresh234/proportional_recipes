@@ -11,6 +11,10 @@ public class Ingredient implements Parcelable {
     private String name;
     private float count;
 
+
+
+    private float proportionalCount;
+
     public Ingredient(String name, float count) {
         this.name = name;
         this.count = count;
@@ -32,9 +36,18 @@ public class Ingredient implements Parcelable {
         this.count = count;
     }
 
+    public float getProportionalCount() {
+        return proportionalCount;
+    }
+
+    public void setProportionalCount(float proportionalCount) {
+        this.proportionalCount = proportionalCount;
+    }
+
     protected Ingredient(Parcel in) {
         name = in.readString();
         count = in.readFloat();
+        proportionalCount = in.readFloat();
     }
 
     @Override
@@ -46,6 +59,7 @@ public class Ingredient implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeFloat(count);
+        dest.writeFloat(proportionalCount);
     }
 
     @SuppressWarnings("unused")
