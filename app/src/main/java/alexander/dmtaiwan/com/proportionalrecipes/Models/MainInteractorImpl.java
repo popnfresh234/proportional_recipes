@@ -23,10 +23,16 @@ public class MainInteractorImpl implements MainInteractor{
         List<Recipe> recipeList = new ArrayList<Recipe>();
         for (int i = 0; i < 5; i++) {
             String name = "Recipe " + String.valueOf(i);
-            Recipe recipe = new Recipe(name, null);
+            ArrayList<Ingredient> ingredientList = new ArrayList<>();
+            for (int j = 1; j < 10; j++) {
+                String ingredientName = "Ingredient " + String.valueOf(j);
+                Ingredient ingredient = new Ingredient(ingredientName, j + 10);
+                ingredientList.add(ingredient);
+            }
+            Recipe recipe = new Recipe(name, ingredientList);
             recipeList.add(recipe);
         }
-        listener.onResult(null);
+        listener.onResult(recipeList);
     }
 
     public interface MainInteractorListener {

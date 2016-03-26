@@ -18,8 +18,10 @@ import alexander.dmtaiwan.com.proportionalrecipes.Presenters.MainPresenter;
 import alexander.dmtaiwan.com.proportionalrecipes.Presenters.MainPresenterImpl;
 import alexander.dmtaiwan.com.proportionalrecipes.R;
 import alexander.dmtaiwan.com.proportionalrecipes.Utilities.RecipeAdapter;
+import alexander.dmtaiwan.com.proportionalrecipes.Utilities.Utilities;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+
 
 public class MainActivity extends AppCompatActivity implements MainView, RecipeAdapter.RecyclerClickListener, View.OnClickListener{
 
@@ -68,6 +70,9 @@ public class MainActivity extends AppCompatActivity implements MainView, RecipeA
     @Override
     public void onRecyclerClick(Recipe recipe) {
         Log.i(LOG_TAG, recipe.getName());
+        Intent intent = new Intent(this, RecipeActivity.class);
+        intent.putExtra(Utilities.EXTRA_RECIPE, recipe);
+        startActivity(intent);
     }
 
     @Override

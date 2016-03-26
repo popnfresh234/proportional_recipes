@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Proportional Recipes</string>
     <string name="action_settings">Settings</string>
+    <string name="edit_text_quantity">Quantity</string>
 
     <!--Text Fields-->
 </resources>

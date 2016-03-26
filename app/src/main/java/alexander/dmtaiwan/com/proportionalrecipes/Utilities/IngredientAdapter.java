@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.List;
@@ -29,14 +30,15 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_recipe, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_ingredient, parent, false);
         return new ViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Ingredient ingredient = mIngredients.get(position);
-        holder.mRecipeTitle.setText(ingredient.getName());
+        holder.mIngredientTitle.setText(ingredient.getName());
+        holder.mIngredientCount.setText(String.valueOf(ingredient.getCount()));
     }
 
     @Override
@@ -48,8 +50,15 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @Bind(R.id.text_view_recipe_title)
-        TextView mRecipeTitle;
+        @Bind(R.id.text_view_ingredient)
+        TextView mIngredientTitle;
+
+        @Bind(R.id.text_view_ingredient_count)
+        TextView mIngredientCount;
+
+        @Bind(R.id.edit_text_proportional_count)
+        EditText mProportionalCount;
+
 
 
         public ViewHolder(View itemView) {
