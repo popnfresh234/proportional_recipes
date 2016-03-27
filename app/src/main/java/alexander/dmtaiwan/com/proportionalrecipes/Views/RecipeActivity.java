@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Alexander on 3/26/2016.
  */
-public class RecipeActivity extends AppCompatActivity implements RecipeView, IngredientAdapter.RecyclerClickListener,IngredientAdapter.RecyclerTextChangedListener{
+public class RecipeActivity extends AppCompatActivity implements IngredientAdapter.RecyclerClickListener,IngredientAdapter.RecyclerTextChangedListener{
 
     private String LOG_TAG = RecipeActivity.class.getSimpleName();
 
@@ -51,11 +51,6 @@ public class RecipeActivity extends AppCompatActivity implements RecipeView, Ing
             mAdapter.updateData(ingredientList);
         }
 
-    }
-
-    @Override
-    public void onDataReturned(List<Ingredient> ingredientList) {
-        mAdapter.updateData(ingredientList);
     }
 
     @Override

@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements MainView, RecipeA
 
     private RecipeAdapter mAdapter;
     private MainPresenter mPresenter;
+    private List<Recipe> mRecipes;
 
 
     @Bind(R.id.recycler_view)
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements MainView, RecipeA
     @Override
     public void onDataReturned(List<Recipe> recipeList) {
         mAdapter.updateData(recipeList);
+        mRecipes = recipeList;
     }
 
     @Override
@@ -77,7 +79,8 @@ public class MainActivity extends AppCompatActivity implements MainView, RecipeA
 
     @Override
     public void onClick(View view) {
-        Intent intent = new Intent(this, RecipeActivity.class);
+        Intent intent = new Intent(this, RecipeEditActivity.class);
+//        intent.putExtra(Utilities.EXTRA_RECIPE, mRecipes.get(0));
         startActivity(intent);
     }
 }

@@ -14,6 +14,10 @@ public class Ingredient implements Parcelable {
     private String unit;
     private double proportionalCount;
 
+    public Ingredient(){
+
+    }
+
     public Ingredient(String name, double count) {
         this.name = name;
         this.count = count;

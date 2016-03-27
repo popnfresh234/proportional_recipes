@@ -7,6 +7,9 @@ import java.util.ArrayList;
 
 public class Recipe implements Parcelable {
 
+    public Recipe() {
+    }
+
     public Recipe(String name, ArrayList<Ingredient> ingredientList) {
         this.name = name;
         this.ingredientList = ingredientList;

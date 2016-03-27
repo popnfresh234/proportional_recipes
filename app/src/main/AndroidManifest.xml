@@ -20,6 +20,7 @@
         </activity>
 
         <activity android:name=".Views.RecipeActivity"/>
+        <activity android:name=".Views.RecipeEditActivity"/>
 
     </application>
 
