@@ -2,7 +2,7 @@ package alexander.dmtaiwan.com.proportionalrecipes.Presenters;
 
 import android.content.Context;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import alexander.dmtaiwan.com.proportionalrecipes.Models.MainInteractor;
 import alexander.dmtaiwan.com.proportionalrecipes.Models.MainInteractorImpl;
@@ -30,7 +30,7 @@ public class MainPresenterImpl implements MainPresenter, MainInteractorImpl.Main
     }
 
     @Override
-    public void onResult(List<Recipe> recipes) {
+    public void onResult(ArrayList<Recipe> recipes) {
         mainView.onDataReturned(recipes);
     }
 }

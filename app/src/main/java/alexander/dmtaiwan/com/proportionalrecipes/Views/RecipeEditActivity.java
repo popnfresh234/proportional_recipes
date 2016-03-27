@@ -16,9 +16,10 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 import alexander.dmtaiwan.com.proportionalrecipes.Models.Ingredient;
 import alexander.dmtaiwan.com.proportionalrecipes.Models.Recipe;
@@ -33,9 +34,6 @@ import butterknife.ButterKnife;
  * Created by Alexander on 4/4/2015.
  */
 public class RecipeEditActivity extends AppCompatActivity implements AdapterListener {
-    public static final String GSON_RECIPE = "gson_recipe";
-    public static final String RECIPE_ID = "recipe_id";
-    public static final String DRUNKENMOKEYTW_ID = "uZq0TrDbkj";
     private DecimalFormat mDecimalFormat = new DecimalFormat("0.#");
 
     private Context mContext = this;
@@ -44,6 +42,8 @@ public class RecipeEditActivity extends AppCompatActivity implements AdapterList
     private Ingredient mIngredient;
     private RecyclerView mIngredientsRecyclerView;
     private EditIngredientAdapter mIngredientAdapter;
+    private ArrayList<Recipe>mRecipeList;
+    private int mRecipePosition;
 
 
     @Bind(R.id.dialog_button_add_ingredient)
@@ -75,7 +75,7 @@ public class RecipeEditActivity extends AppCompatActivity implements AdapterList
     private InputMethodManager mImm;
 
     //Setup ArrayList of Ingredients and Direction
-    private List<Ingredient> mIngredientList = null;
+    private ArrayList<Ingredient> mIngredientList = null;
 
 
     @Override
@@ -92,8 +92,6 @@ public class RecipeEditActivity extends AppCompatActivity implements AdapterList
         //Get input method manager
         mImm = (InputMethodManager) getSystemService(
                 Context.INPUT_METHOD_SERVICE);
-
-
 
         //Setup Recycler Views
         mIngredientsRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_ingredients);
@@ -116,12 +114,32 @@ public class RecipeEditActivity extends AppCompatActivity implements AdapterList
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Gson gson = new Gson();
+                String jsonList = "";
+                //Save recipe here
+                //Editing Recipe
+                if (mRecipeList != null && mRecipeList.size() > 0) {
+                    mRecipeList.set(mRecipePosition, mRecipe);
+                   jsonList = gson.toJson(mRecipeList);
+                    Log.i("JSON", jsonList);
+                    Utilities.writeToFile(jsonList, mContext);
+                }else {
+                    //New Recipe
+                    Log.i("NEW RECIPE", "adding new recipe");
+                    mRecipeList = new ArrayList<Recipe>();
+                    mRecipe = new Recipe("Test", mIngredientList);
+                    mRecipeList.add(mRecipe);
+                    jsonList = gson.toJson(mRecipeList);
+                    Log.i("JSON", jsonList);
+                    Utilities.writeToFile(jsonList, mContext);
+                }
+
             }
         });
 
         //If recipe passed with intent, populate adapter
-        if (getIntent().getParcelableExtra(Utilities.EXTRA_RECIPE) != null) {
-            Recipe recipe = getIntent().getParcelableExtra(Utilities.EXTRA_RECIPE);
+        if (getIntent().getParcelableExtra(Utilities.EXTRA_RECIPES) != null) {
+            Recipe recipe = getIntent().getParcelableExtra(Utilities.EXTRA_RECIPES);
             populateRecipe(recipe);
         }
     }
@@ -137,13 +155,9 @@ public class RecipeEditActivity extends AppCompatActivity implements AdapterList
     }
 
     private void populateRecipe(Recipe recipe) {
-
-        String recipeId = getIntent().getStringExtra(RECIPE_ID);
-
-
         mRecipe = recipe;
         //Load Ingredients
-        List<Ingredient> tempIngredientList = recipe.getIngredientList();
+        ArrayList<Ingredient> tempIngredientList = recipe.getIngredientList();
         if (tempIngredientList.size() > 0) {
             for (int i = 0; i < tempIngredientList.size(); i++) {
                 mIngredientList.add(tempIngredientList.get(i));

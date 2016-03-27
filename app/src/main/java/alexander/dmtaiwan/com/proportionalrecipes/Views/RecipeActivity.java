@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import alexander.dmtaiwan.com.proportionalrecipes.Models.Ingredient;
@@ -24,7 +25,8 @@ public class RecipeActivity extends AppCompatActivity implements IngredientAdapt
     private String LOG_TAG = RecipeActivity.class.getSimpleName();
 
     private IngredientAdapter mAdapter;
-
+    private ArrayList<Recipe> mRecipeList;
+    private int mRecipePosition;
 
     @Bind(R.id.recycler_view)
     RecyclerView mRecyclerView;
@@ -46,7 +48,9 @@ public class RecipeActivity extends AppCompatActivity implements IngredientAdapt
         mRecyclerView.setAdapter(mAdapter);
 
         if (getIntent() != null) {
-            Recipe recipe = getIntent().getParcelableExtra(Utilities.EXTRA_RECIPE);
+            mRecipeList = getIntent().getParcelableArrayListExtra(Utilities.EXTRA_RECIPES);
+            mRecipePosition = getIntent().getIntExtra(Utilities.EXTRA_RECIPE_POSITION, 0);
+            Recipe recipe = mRecipeList.get(mRecipePosition);
             List<Ingredient> ingredientList = recipe.getIngredientList();
             mAdapter.updateData(ingredientList);
         }

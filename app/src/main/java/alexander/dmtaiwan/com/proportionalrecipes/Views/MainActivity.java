@@ -7,11 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import alexander.dmtaiwan.com.proportionalrecipes.Models.Recipe;
 import alexander.dmtaiwan.com.proportionalrecipes.Presenters.MainPresenter;
@@ -29,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements MainView, RecipeA
 
     private RecipeAdapter mAdapter;
     private MainPresenter mPresenter;
-    private List<Recipe> mRecipes;
+    private ArrayList<Recipe> mRecipeList;
 
 
     @Bind(R.id.recycler_view)
@@ -64,23 +63,23 @@ public class MainActivity extends AppCompatActivity implements MainView, RecipeA
     }
 
     @Override
-    public void onDataReturned(List<Recipe> recipeList) {
+    public void onDataReturned(ArrayList<Recipe> recipeList) {
         mAdapter.updateData(recipeList);
-        mRecipes = recipeList;
+        mRecipeList = recipeList;
     }
 
     @Override
-    public void onRecyclerClick(Recipe recipe) {
-        Log.i(LOG_TAG, recipe.getName());
+    public void onRecyclerClick(int position) {
         Intent intent = new Intent(this, RecipeActivity.class);
-        intent.putExtra(Utilities.EXTRA_RECIPE, recipe);
+        intent.putParcelableArrayListExtra(Utilities.EXTRA_RECIPES, mRecipeList);
+        intent.putExtra(Utilities.EXTRA_RECIPE_POSITION, position);
         startActivity(intent);
     }
 
     @Override
     public void onClick(View view) {
         Intent intent = new Intent(this, RecipeEditActivity.class);
-//        intent.putExtra(Utilities.EXTRA_RECIPE, mRecipes.get(0));
+//        intent.putExtra(Utilities.EXTRA_RECIPES, mRecipeList.get(0));
         startActivity(intent);
     }
 }
