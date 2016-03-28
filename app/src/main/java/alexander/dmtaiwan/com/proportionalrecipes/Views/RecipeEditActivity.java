@@ -34,6 +34,8 @@ import butterknife.ButterKnife;
  * Created by Alexander on 4/4/2015.
  */
 public class RecipeEditActivity extends AppCompatActivity implements AdapterListener {
+    private final static String LOG_TAG = RecipeEditActivity.class.getSimpleName();
+
     private DecimalFormat mDecimalFormat = new DecimalFormat("0.#");
 
     private Context mContext = this;
@@ -44,6 +46,7 @@ public class RecipeEditActivity extends AppCompatActivity implements AdapterList
     private EditIngredientAdapter mIngredientAdapter;
     private ArrayList<Recipe>mRecipeList;
     private int mRecipePosition;
+    private Boolean mNewRecipe;
 
 
     @Bind(R.id.dialog_button_add_ingredient)
@@ -81,13 +84,19 @@ public class RecipeEditActivity extends AppCompatActivity implements AdapterList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         setContentView(R.layout.activity_recipe_edit);
         ButterKnife.bind(this);
 
 
         mIngredientList = new ArrayList<Ingredient>();
+
+        if (getIntent() != null) {
+            mRecipeList = getIntent().getParcelableArrayListExtra(Utilities.EXTRA_RECIPES);
+            mRecipePosition = getIntent().getIntExtra(Utilities.EXTRA_RECIPE_POSITION, -1);
+            mNewRecipe = getIntent().getBooleanExtra(Utilities.EXTRA_NEW_RECIPE, true);
+        }
+
+
 
         //Get input method manager
         mImm = (InputMethodManager) getSystemService(
@@ -118,28 +127,33 @@ public class RecipeEditActivity extends AppCompatActivity implements AdapterList
                 String jsonList = "";
                 //Save recipe here
                 //Editing Recipe
-                if (mRecipeList != null && mRecipeList.size() > 0) {
+                if (!mNewRecipe) {
+                    Log.i(LOG_TAG, "Editing Recipe");
                     mRecipeList.set(mRecipePosition, mRecipe);
-                   jsonList = gson.toJson(mRecipeList);
-                    Log.i("JSON", jsonList);
+                    jsonList = gson.toJson(mRecipeList);
                     Utilities.writeToFile(jsonList, mContext);
-                }else {
-                    //New Recipe
-                    Log.i("NEW RECIPE", "adding new recipe");
-                    mRecipeList = new ArrayList<Recipe>();
-                    mRecipe = new Recipe("Test", mIngredientList);
+                }else if (mRecipeList != null) {
+                    Log.i(LOG_TAG, "Adding New Recipe");
+                    mRecipe = new Recipe(mTitleEditText.getText().toString(), mIngredientList);
                     mRecipeList.add(mRecipe);
                     jsonList = gson.toJson(mRecipeList);
-                    Log.i("JSON", jsonList);
+                    Utilities.writeToFile(jsonList, mContext);
+                } else {
+                    //New Recipe
+                    Log.i(LOG_TAG, "First Recipe");
+                    mRecipeList = new ArrayList<Recipe>();
+                    mRecipe = new Recipe(mTitleEditText.getText().toString(), mIngredientList);
+                    mRecipeList.add(mRecipe);
+                    jsonList = gson.toJson(mRecipeList);
                     Utilities.writeToFile(jsonList, mContext);
                 }
-
+                finish();
             }
         });
 
-        //If recipe passed with intent, populate adapter
-        if (getIntent().getParcelableExtra(Utilities.EXTRA_RECIPES) != null) {
-            Recipe recipe = getIntent().getParcelableExtra(Utilities.EXTRA_RECIPES);
+        //If position passed with intent, populate recipe
+        if (mRecipePosition != -1) {
+            Recipe recipe = mRecipeList.get(mRecipePosition);
             populateRecipe(recipe);
         }
     }

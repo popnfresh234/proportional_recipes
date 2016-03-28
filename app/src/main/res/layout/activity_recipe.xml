@@ -26,6 +26,7 @@
 
         <TextView
             android:text="Count"
+            android:gravity="center"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2" />
@@ -34,18 +35,15 @@
             android:text="Unit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2" />
+            android:layout_weight="1" />
 
         <TextView
             android:text="Prop. Count"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"/>
+            android:layout_weight="4"/>
 
-        <android.support.v4.widget.Space
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:layout_height="wrap_content" />
+
 
 
     </LinearLayout>

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class EditIngredientAdapter extends RecyclerView.Adapter<EditIngredientAd
     private static final String TAG = "Adapter";
     private List<Ingredient> mIngredients;
     private AdapterListener mListener;
-    private DecimalFormat mDecimalFormat = new DecimalFormat("0.#");
+    private DecimalFormat mDecimalFormat = new DecimalFormat("0");
 
 
     public EditIngredientAdapter(List<Ingredient> ingredients, AdapterListener listener) {
@@ -65,6 +66,7 @@ public class EditIngredientAdapter extends RecyclerView.Adapter<EditIngredientAd
         //Load up ingredient values if not a new ingredient item
         if(ingredient.getCount()!=0) {
             double quantity = ingredient.getCount();
+            mDecimalFormat.setRoundingMode(RoundingMode.UP);
             String stringQuantity = mDecimalFormat.format(quantity);
             holder.quantity.setText(stringQuantity + " ");
 

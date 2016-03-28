@@ -1,5 +1,6 @@
 package alexander.dmtaiwan.com.proportionalrecipes.Views;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -7,9 +8,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 import alexander.dmtaiwan.com.proportionalrecipes.Models.Recipe;
@@ -17,18 +24,31 @@ import alexander.dmtaiwan.com.proportionalrecipes.Presenters.MainPresenter;
 import alexander.dmtaiwan.com.proportionalrecipes.Presenters.MainPresenterImpl;
 import alexander.dmtaiwan.com.proportionalrecipes.R;
 import alexander.dmtaiwan.com.proportionalrecipes.Utilities.RecipeAdapter;
+import alexander.dmtaiwan.com.proportionalrecipes.Utilities.RecipeService;
 import alexander.dmtaiwan.com.proportionalrecipes.Utilities.Utilities;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class MainActivity extends AppCompatActivity implements MainView, RecipeAdapter.RecyclerClickListener, View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements MainView, RecipeAdapter.RecyclerClickListener, View.OnClickListener {
 
     private String LOG_TAG = MainActivity.class.getSimpleName();
 
     private RecipeAdapter mAdapter;
     private MainPresenter mPresenter;
     private ArrayList<Recipe> mRecipeList;
+    private Context mContext;
+    public static MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    private OkHttpClient mClient;
 
 
     @Bind(R.id.recycler_view)
@@ -55,7 +75,13 @@ public class MainActivity extends AppCompatActivity implements MainView, RecipeA
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(llm);
         mRecyclerView.setAdapter(mAdapter);
+        mContext = this;
+        mClient = new OkHttpClient();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         if (mPresenter == null) {
             mPresenter = new MainPresenterImpl(this, this);
         }
@@ -63,7 +89,62 @@ public class MainActivity extends AppCompatActivity implements MainView, RecipeA
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Utilities.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        RecipeService service = retrofit.create(RecipeService.class);
+        if (id == R.id.action_upload) {
+            Call<ArrayList<Recipe>> upload = service.uploadRecipes(Utilities.JSON_ID, mRecipeList);
+            upload.enqueue(new Callback<ArrayList<Recipe>>() {
+                @Override
+                public void onResponse(Call<ArrayList<Recipe>> call, retrofit2.Response<ArrayList<Recipe>> response) {
+                    Log.i(LOG_TAG, String.valueOf(response.code()));
+                    Log.i(LOG_TAG, response.message());
+                    Log.i(LOG_TAG, String.valueOf(response.body().size()));
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<Recipe>> call, Throwable t) {
+
+                }
+            });
+
+        }
+
+        if (id == R.id.action_download) {
+            Call<ArrayList<Recipe>> download = service.downloadRecipes(Utilities.JSON_ID);
+            download.enqueue(new Callback<ArrayList<Recipe>>() {
+                @Override
+                public void onResponse(Call<ArrayList<Recipe>> call, retrofit2.Response<ArrayList<Recipe>> response) {
+                    ArrayList<Recipe> recipeList = response.body();
+                    String json = new Gson().toJson(recipeList);
+                    Utilities.writeToFile(json,mContext);
+                    mPresenter.fetchData();
+
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<Recipe>> call, Throwable t) {
+
+                }
+            });
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onDataReturned(ArrayList<Recipe> recipeList) {
+        Log.i(LOG_TAG, String.valueOf(recipeList.size()));
         mAdapter.updateData(recipeList);
         mRecipeList = recipeList;
     }
@@ -79,7 +160,18 @@ public class MainActivity extends AppCompatActivity implements MainView, RecipeA
     @Override
     public void onClick(View view) {
         Intent intent = new Intent(this, RecipeEditActivity.class);
-//        intent.putExtra(Utilities.EXTRA_RECIPES, mRecipeList.get(0));
+        intent.putParcelableArrayListExtra(Utilities.EXTRA_RECIPES, mRecipeList);
+        intent.putExtra(Utilities.EXTRA_NEW_RECIPE, true);
         startActivity(intent);
+    }
+
+    public String doPostRequest(String url, String json) throws IOException {
+        RequestBody body = RequestBody.create(JSON, json);
+        Request request = new Request.Builder()
+                .url(Utilities.BASE_URL)
+                .put(body)
+                .build();
+        Response response = mClient.newCall(request).execute();
+        return response.body().string();
     }
 }

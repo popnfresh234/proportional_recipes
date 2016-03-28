@@ -7,10 +7,10 @@
     android:background="?android:attr/selectableItemBackground">
 
     <TextView
+        android:textSize="24sp"
         android:id="@+id/text_view_recipe_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
         tools:text="Recipe Title" />
 
 </LinearLayout>

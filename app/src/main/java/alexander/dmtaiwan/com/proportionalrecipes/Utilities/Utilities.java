@@ -23,7 +23,10 @@ import alexander.dmtaiwan.com.proportionalrecipes.Models.Recipe;
 public class Utilities {
     public static final String EXTRA_RECIPES = "com.dmtaiwan.alexander.extra.recipe";
     public static final String EXTRA_RECIPE_POSITION = "com.dmtaiwan.alexander.extra.position";
+    public static final String EXTRA_NEW_RECIPE = "com.dmtaiwan.alexander.extra.newrecipe";
     public static final String FILE_NAME = "recipes.json";
+    public static final String BASE_URL = "https://jsonblob.com/";
+    public static final String JSON_ID = "56f8e7e8e4b01190df592763";
 
     static public boolean doesFileExist(Context context) {
         File file = context.getFileStreamPath(FILE_NAME);

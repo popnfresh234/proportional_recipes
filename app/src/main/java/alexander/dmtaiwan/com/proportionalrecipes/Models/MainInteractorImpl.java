@@ -1,7 +1,6 @@
 package alexander.dmtaiwan.com.proportionalrecipes.Models;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -23,7 +22,7 @@ public class MainInteractorImpl implements MainInteractor{
     @Override
     public void fetchData() {
 //        Dummy Data
-//        ArrayList<Recipe> recipeList = new ArrayList<Recipe>();
+//        ArrayList<Recipe> downloadRecipes = new ArrayList<Recipe>();
 //        for (int i = 0; i < 5; i++) {
 //            String name = "Recipe " + String.valueOf(i);
 //            ArrayList<Ingredient> ingredientList = new ArrayList<>();
@@ -33,20 +32,18 @@ public class MainInteractorImpl implements MainInteractor{
 //                ingredientList.add(ingredient);
 //            }
 //            Recipe recipe = new Recipe(name, ingredientList);
-//            recipeList.add(recipe);
+//            downloadRecipes.add(recipe);
 //
 //        }
-//        Log.i("TEST", String.valueOf(recipeList.size()));
-//                listener.onResult(recipeList);
+//        Log.i("TEST", String.valueOf(downloadRecipes.size()));
+//                listener.onResult(downloadRecipes);
 
         if (Utilities.doesFileExist(context)) {
             String jsonRecipeList = Utilities.readFromFile(context);
-            Log.i("JSON RECIPE", jsonRecipeList);
             ArrayList<Recipe> recipeList = Utilities.recipesFromJson(jsonRecipeList);
             listener.onResult(recipeList);
         }
         else {
-            Log.i("FILE DOESNT EXIST", "nofile");
             listener.onResult(new ArrayList<Recipe>());
         }
 

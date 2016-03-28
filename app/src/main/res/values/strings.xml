@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Proportional Recipes</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_upload">Upload Recipes</string>
+    <string name="action_download">Download Recipes</string>
     <string name="edit_text_quantity">Quantity</string>
 
     <!--Text Fields-->

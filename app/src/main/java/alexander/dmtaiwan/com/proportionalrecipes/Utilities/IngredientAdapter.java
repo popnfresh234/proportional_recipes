@@ -46,13 +46,15 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        mDecimalFormat.setRoundingMode(RoundingMode.UP);
         Ingredient ingredient = mIngredients.get(position);
         holder.mIngredientTitle.setText(ingredient.getName());
-        holder.mIngredientCount.setText(String.valueOf(ingredient.getCount()));
+        String formattedCount = mDecimalFormat.format(ingredient.getCount());
+        holder.mIngredientCount.setText(formattedCount);
+        holder.mUnits.setText(ingredient.getUnit());
         if (ingredient.getProportionalCount() != 0.0f) {
-            mDecimalFormat.setRoundingMode(RoundingMode.UP);
-            String formattedCount = mDecimalFormat.format(ingredient.getProportionalCount());
-            holder.mProportionalCount.setText(formattedCount);
+            String formattedProportionalCount = mDecimalFormat.format(ingredient.getProportionalCount());
+            holder.mProportionalCount.setText(formattedProportionalCount);
         }
     }
 
@@ -70,6 +72,9 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
 
         @Bind(R.id.text_view_ingredient_count)
         TextView mIngredientCount;
+
+        @Bind(R.id.text_view_units)
+        TextView mUnits;
 
         @Bind(R.id.edit_text_proportional_count)
         EditText mProportionalCount;

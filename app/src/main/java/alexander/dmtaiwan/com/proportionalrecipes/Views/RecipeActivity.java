@@ -1,10 +1,15 @@
 package alexander.dmtaiwan.com.proportionalrecipes.Views;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +44,6 @@ public class RecipeActivity extends AppCompatActivity implements IngredientAdapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
         ButterKnife.bind(this);
-
-
         mAdapter = new IngredientAdapter(mEmptyView, this, this, this);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -54,7 +57,33 @@ public class RecipeActivity extends AppCompatActivity implements IngredientAdapt
             List<Ingredient> ingredientList = recipe.getIngredientList();
             mAdapter.updateData(ingredientList);
         }
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_recipe, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_edit) {
+            Intent intent = new Intent(this, RecipeEditActivity.class);
+            intent.putExtra(Utilities.EXTRA_RECIPES, mRecipeList);
+            intent.putExtra(Utilities.EXTRA_RECIPE_POSITION, mRecipePosition);
+            intent.putExtra(Utilities.EXTRA_NEW_RECIPE, false);
+            startActivity(intent);
+            finish();
+        }
+
+        if (id == R.id.action_delete) {
+            mRecipeList.remove(mRecipePosition);
+            String jsonString = new Gson().toJson(mRecipeList);
+            Utilities.writeToFile(jsonString, this);
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
