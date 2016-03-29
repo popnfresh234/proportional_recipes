@@ -20,11 +20,13 @@ import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import alexander.dmtaiwan.com.proportionalrecipes.Models.Ingredient;
 import alexander.dmtaiwan.com.proportionalrecipes.Models.Recipe;
 import alexander.dmtaiwan.com.proportionalrecipes.R;
 import alexander.dmtaiwan.com.proportionalrecipes.Utilities.AdapterListener;
+import alexander.dmtaiwan.com.proportionalrecipes.Utilities.RecipeComparator;
 import alexander.dmtaiwan.com.proportionalrecipes.Utilities.EditIngredientAdapter;
 import alexander.dmtaiwan.com.proportionalrecipes.Utilities.Utilities;
 import butterknife.Bind;
@@ -129,13 +131,23 @@ public class RecipeEditActivity extends AppCompatActivity implements AdapterList
                 //Editing Recipe
                 if (!mNewRecipe) {
                     Log.i(LOG_TAG, "Editing Recipe");
+                    mRecipe.setName(mTitleEditText.getText().toString());
+                    mRecipe.setIngredientList(mIngredientList);
                     mRecipeList.set(mRecipePosition, mRecipe);
+                    Collections.sort(mRecipeList, new RecipeComparator());
+                    for (int i = 0; i < mRecipeList.size(); i++) {
+                        Log.i(LOG_TAG, mRecipeList.get(i).getName());
+                    }
                     jsonList = gson.toJson(mRecipeList);
                     Utilities.writeToFile(jsonList, mContext);
                 }else if (mRecipeList != null) {
                     Log.i(LOG_TAG, "Adding New Recipe");
                     mRecipe = new Recipe(mTitleEditText.getText().toString(), mIngredientList);
                     mRecipeList.add(mRecipe);
+                    Collections.sort(mRecipeList, new RecipeComparator());
+                    for (int i = 0; i < mRecipeList.size(); i++) {
+                        Log.i(LOG_TAG, mRecipeList.get(i).getName());
+                    }
                     jsonList = gson.toJson(mRecipeList);
                     Utilities.writeToFile(jsonList, mContext);
                 } else {
@@ -144,6 +156,10 @@ public class RecipeEditActivity extends AppCompatActivity implements AdapterList
                     mRecipeList = new ArrayList<Recipe>();
                     mRecipe = new Recipe(mTitleEditText.getText().toString(), mIngredientList);
                     mRecipeList.add(mRecipe);
+                    Collections.sort(mRecipeList, new RecipeComparator());
+                    for (int i = 0; i < mRecipeList.size(); i++) {
+                        Log.i(LOG_TAG, mRecipeList.get(i).getName());
+                    }
                     jsonList = gson.toJson(mRecipeList);
                     Utilities.writeToFile(jsonList, mContext);
                 }
