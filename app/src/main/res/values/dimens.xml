@@ -16,4 +16,28 @@
     <dimen name="control_padding_material">4dp</dimen>
     <!-- Default rounded corner for controls -->
     <dimen name="control_corner_material">2dp</dimen>
+
+    <dimen name="move_up_button_size">40dp</dimen>
+
+    <!--CardView Dimens-->
+    <dimen name="card_view_margin">4dp</dimen>
+    <dimen name="card_corner_radius">2dp</dimen>
+    <dimen name="card_elevation">4dp</dimen>
+
+    <!--Margins & Padding-->
+    <dimen name="button_margin_top">8dp</dimen>
+    <dimen name="button_margin_bottom">16dp</dimen>
+    <dimen name="text_view_margin_top">8dp</dimen>
+    <dimen name="text_view_margin_side">8dp</dimen>
+    <dimen name="recycler_margin_top">8dp</dimen>
+    <dimen name="spinner_padding">8dp</dimen>
+    <dimen name="text_view_padding">8dp</dimen>
+    <dimen name="edit_text_padding">4dp</dimen>
+    <dimen name="dialog_spinner_padding_left">4dp</dimen>
+    <!--Text Sizes-->
+    <dimen name="recipe_adapter_title_text_size">24sp</dimen>
+    <dimen name="ingredient_adatper_small_text">12sp</dimen>
+    <dimen name="ingredient_adapter_tiny_text">10sp</dimen>
+    <dimen name="dialog_small_text">12sp</dimen>
+    <dimen name="dialog_large_text">22sp</dimen>
 </resources>

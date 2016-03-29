@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -39,11 +40,17 @@ public class RecipeActivity extends AppCompatActivity implements IngredientAdapt
     @Bind(R.id.empty_view)
     TextView mEmptyView;
 
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
         ButterKnife.bind(this);
+        setSupportActionBar(mToolbar);
+
+
         mAdapter = new IngredientAdapter(mEmptyView, this, this, this);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -54,6 +61,7 @@ public class RecipeActivity extends AppCompatActivity implements IngredientAdapt
             mRecipeList = getIntent().getParcelableArrayListExtra(Utilities.EXTRA_RECIPES);
             mRecipePosition = getIntent().getIntExtra(Utilities.EXTRA_RECIPE_POSITION, 0);
             Recipe recipe = mRecipeList.get(mRecipePosition);
+            getSupportActionBar().setTitle(recipe.getName());
             List<Ingredient> ingredientList = recipe.getIngredientList();
             mAdapter.updateData(ingredientList);
         }

@@ -94,6 +94,9 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
         public void onClick(View v) {
             if (v.getId() == R.id.button_ok) {
                 String input = mProportionalCount.getText().toString();
+                if (input.equals("")) {
+                    input = "0";
+                }
                 mTextChangedListener.onRecyclerTextChanged(Double.parseDouble(input), getAdapterPosition());
             }
         }

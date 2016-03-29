@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import alexander.dmtaiwan.com.proportionalrecipes.Models.Recipe;
@@ -30,9 +29,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
@@ -60,13 +56,15 @@ public class MainActivity extends AppCompatActivity implements MainView, RecipeA
     @Bind(R.id.fab)
     FloatingActionButton mFab;
 
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
         mFab.setOnClickListener(this);
 
 
@@ -163,15 +161,5 @@ public class MainActivity extends AppCompatActivity implements MainView, RecipeA
         intent.putParcelableArrayListExtra(Utilities.EXTRA_RECIPES, mRecipeList);
         intent.putExtra(Utilities.EXTRA_NEW_RECIPE, true);
         startActivity(intent);
-    }
-
-    public String doPostRequest(String url, String json) throws IOException {
-        RequestBody body = RequestBody.create(JSON, json);
-        Request request = new Request.Builder()
-                .url(Utilities.BASE_URL)
-                .put(body)
-                .build();
-        Response response = mClient.newCall(request).execute();
-        return response.body().string();
     }
 }
