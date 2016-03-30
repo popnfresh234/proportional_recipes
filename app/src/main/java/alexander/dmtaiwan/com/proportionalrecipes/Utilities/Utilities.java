@@ -1,5 +1,6 @@
 package alexander.dmtaiwan.com.proportionalrecipes.Utilities;
 
+import android.app.Application;
 import android.content.Context;
 
 import com.google.gson.Gson;
@@ -72,5 +73,9 @@ public class Utilities {
         Type type = new TypeToken<ArrayList<Recipe>>(){}.getType();
         ArrayList<Recipe> recipeList = new Gson().fromJson(json, type);
         return recipeList;
+    }
+
+    public static int getRandomInt(Application application) {
+        return ((ProportionalRecipes)application).getRandom().nextInt(9999999 - 0+1)+0;
     }
 }

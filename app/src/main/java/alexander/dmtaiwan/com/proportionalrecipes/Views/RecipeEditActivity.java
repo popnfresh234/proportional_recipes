@@ -26,8 +26,8 @@ import alexander.dmtaiwan.com.proportionalrecipes.Models.Ingredient;
 import alexander.dmtaiwan.com.proportionalrecipes.Models.Recipe;
 import alexander.dmtaiwan.com.proportionalrecipes.R;
 import alexander.dmtaiwan.com.proportionalrecipes.Utilities.AdapterListener;
-import alexander.dmtaiwan.com.proportionalrecipes.Utilities.RecipeComparator;
 import alexander.dmtaiwan.com.proportionalrecipes.Utilities.EditIngredientAdapter;
+import alexander.dmtaiwan.com.proportionalrecipes.Utilities.RecipeComparator;
 import alexander.dmtaiwan.com.proportionalrecipes.Utilities.Utilities;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -153,6 +153,7 @@ public class RecipeEditActivity extends AppCompatActivity implements AdapterList
                 } else {
                     //New Recipe
                     Log.i(LOG_TAG, "First Recipe");
+
                     mRecipeList = new ArrayList<Recipe>();
                     mRecipe = new Recipe(mTitleEditText.getText().toString(), mIngredientList);
                     mRecipeList.add(mRecipe);
