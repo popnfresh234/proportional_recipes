@@ -17,6 +17,7 @@ public class Recipe implements Parcelable {
 
     private String name;
     private ArrayList<Ingredient> ingredientList;
+    private int id;
 
     public String getName() {
         return name;
@@ -34,8 +35,17 @@ public class Recipe implements Parcelable {
         this.ingredientList = ingredientList;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id=id;
+    }
+
     protected Recipe(Parcel in) {
         name = in.readString();
+        id = in.readInt();
         if (in.readByte() == 0x01) {
             ingredientList = new ArrayList<Ingredient>();
             in.readList(ingredientList, Ingredient.class.getClassLoader());
@@ -52,6 +62,7 @@ public class Recipe implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
+        dest.writeInt(id);
         if (ingredientList == null) {
             dest.writeByte((byte) (0x00));
         } else {
