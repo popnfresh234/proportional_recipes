@@ -17,8 +17,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
 import java.util.ArrayList;
 
 import alexander.dmtaiwan.com.proportionalrecipes.Models.Recipe;
@@ -26,16 +24,11 @@ import alexander.dmtaiwan.com.proportionalrecipes.Presenters.MainPresenter;
 import alexander.dmtaiwan.com.proportionalrecipes.Presenters.MainPresenterImpl;
 import alexander.dmtaiwan.com.proportionalrecipes.R;
 import alexander.dmtaiwan.com.proportionalrecipes.Utilities.RecipeAdapter;
-import alexander.dmtaiwan.com.proportionalrecipes.Utilities.RecipeService;
 import alexander.dmtaiwan.com.proportionalrecipes.Utilities.Utilities;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MainActivity extends AppCompatActivity implements MainView, RecipeAdapter.RecyclerClickListener, View.OnClickListener {
@@ -105,50 +98,14 @@ public class MainActivity extends AppCompatActivity implements MainView, RecipeA
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         mProgressBar.setVisibility(View.VISIBLE);
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Utilities.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
 
-        RecipeService service = retrofit.create(RecipeService.class);
         if (id == R.id.action_upload) {
-            Call<ArrayList<Recipe>> upload = service.uploadRecipes(Utilities.JSON_ID, mRecipeList);
-            upload.enqueue(new Callback<ArrayList<Recipe>>() {
-                @Override
-                public void onResponse(Call<ArrayList<Recipe>> call, retrofit2.Response<ArrayList<Recipe>> response) {
-                    mProgressBar.setVisibility(View.INVISIBLE);
-                    Snackbar.make(mCoordinatorLayout, getString(R.string.upload_success), Snackbar.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onFailure(Call<ArrayList<Recipe>> call, Throwable t) {
-                    mProgressBar.setVisibility(View.INVISIBLE);
-                    Snackbar.make(mCoordinatorLayout, getString(R.string.upload_failure), Snackbar.LENGTH_SHORT).show();
-                }
-            });
+            mPresenter.uploadData(mRecipeList, this);
 
         }
 
         if (id == R.id.action_download) {
-            Call<ArrayList<Recipe>> download = service.downloadRecipes(Utilities.JSON_ID);
-            download.enqueue(new Callback<ArrayList<Recipe>>() {
-                @Override
-                public void onResponse(Call<ArrayList<Recipe>> call, retrofit2.Response<ArrayList<Recipe>> response) {
-                    mProgressBar.setVisibility(View.INVISIBLE);
-                    Snackbar.make(mCoordinatorLayout, getString(R.string.download_success), Snackbar.LENGTH_SHORT).show();
-                    ArrayList<Recipe> recipeList = response.body();
-                    String json = new Gson().toJson(recipeList);
-                    Utilities.writeToFile(json,mContext);
-                    mPresenter.fetchData();
-
-                }
-
-                @Override
-                public void onFailure(Call<ArrayList<Recipe>> call, Throwable t) {
-                    mProgressBar.setVisibility(View.INVISIBLE);
-                    Snackbar.make(mCoordinatorLayout, getString(R.string.download_failure), Snackbar.LENGTH_SHORT).show();
-                }
-            });
+            mPresenter.downloadData(mRecipeList, this);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -158,6 +115,26 @@ public class MainActivity extends AppCompatActivity implements MainView, RecipeA
         Log.i(LOG_TAG, String.valueOf(recipeList.size()));
         mAdapter.updateData(recipeList);
         mRecipeList = recipeList;
+    }
+
+    @Override
+    public void onNetworkTransferCompleted(ArrayList<Recipe> recipeList) {
+
+    }
+
+    @Override
+    public void showLoading() {
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        mProgressBar.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void makeSnackbar(String message) {
+        Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override

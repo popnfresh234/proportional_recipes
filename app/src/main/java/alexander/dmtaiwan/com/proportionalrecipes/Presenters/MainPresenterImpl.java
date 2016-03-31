@@ -30,7 +30,36 @@ public class MainPresenterImpl implements MainPresenter, MainInteractorImpl.Main
     }
 
     @Override
+    public void uploadData(ArrayList<Recipe> recipeList, Context context) {
+        mainInteractor.uploadData(recipeList, context);
+    }
+
+    @Override
+    public void downloadData(ArrayList<Recipe> recipeList, Context context) {
+        mainInteractor.downloadData(recipeList, context);
+    }
+
+    @Override
     public void onResult(ArrayList<Recipe> recipes) {
         mainView.onDataReturned(recipes);
+    }
+
+    @Override
+    public void onNetworkTransferComplete(ArrayList<Recipe> recipes) {
+    }
+
+    @Override
+    public void showLoading() {
+        mainView.showLoading();
+    }
+
+    @Override
+    public void hideLoading() {
+        mainView.hideLoading();
+    }
+
+    @Override
+    public void makeSnackBar(String message) {
+
     }
 }

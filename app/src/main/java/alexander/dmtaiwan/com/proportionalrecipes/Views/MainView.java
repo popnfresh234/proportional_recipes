@@ -9,4 +9,12 @@ import alexander.dmtaiwan.com.proportionalrecipes.Models.Recipe;
  */
 public interface MainView {
     public void onDataReturned(ArrayList<Recipe> recipeList);
+
+    public void onNetworkTransferCompleted(ArrayList<Recipe> recipeList);
+
+    public void showLoading();
+
+    public void hideLoading();
+
+    public void makeSnackbar (String message);
 }
