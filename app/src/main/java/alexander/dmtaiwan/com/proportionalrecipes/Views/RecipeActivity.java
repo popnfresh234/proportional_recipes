@@ -1,5 +1,8 @@
 package alexander.dmtaiwan.com.proportionalrecipes.Views;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -86,12 +89,31 @@ public class RecipeActivity extends AppCompatActivity implements IngredientAdapt
         }
 
         if (id == R.id.action_delete) {
-            mRecipeList.remove(mRecipePosition);
-            String jsonString = new Gson().toJson(mRecipeList);
-            Utilities.writeToFile(jsonString, this);
-            finish();
+            displayAlert(this);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void displayAlert(final Context context) {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch(which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        mRecipeList.remove(mRecipePosition);
+                        String jsonString = new Gson().toJson(mRecipeList);
+                        Utilities.writeToFile(jsonString, context);
+                        finish();
+                        break;
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        break;
+                }
+            }
+        };
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.dialog_confirm))
+                .setPositiveButton(getString(R.string.dialog_positive), dialogClickListener)
+                .setNegativeButton(getString(R.string.dialog_negative), dialogClickListener).show();
     }
 
     @Override

@@ -36,6 +36,16 @@
     <string name="button_dialog_cancel">Cancel</string>
     <string name="button_dialog_remove">Remove</string>
 
+    <!--Snackbar Strings-->
+    <string name="upload_success">Upload successful!</string>
+    <string name="upload_failure">Upload unsuccessful :(</string>
+    <string name="download_success">Download Success!</string>
+    <string name="download_failure">Download Unsuccessful :(</string>
+
+    <!--AlertDialog-->
+    <string name="dialog_confirm">Are you sure?</string>
+    <string name="dialog_positive">OK</string>
+    <string name="dialog_negative">Cancel</string>
 
 
     <string-array name="dialog_spinner_units">
@@ -45,8 +55,8 @@
         <item>kg</item>
         <item>mL</item>
         <item>L</item>
-        <item>teaspoon</item>
-        <item>tablespoon</item>
+        <item>tsp</item>
+        <item>tbsp</item>
         <item>cup</item>
         <item>piece</item>
         <item>box</item>

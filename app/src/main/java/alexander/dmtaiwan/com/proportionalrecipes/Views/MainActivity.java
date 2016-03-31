@@ -3,7 +3,9 @@ package alexander.dmtaiwan.com.proportionalrecipes.Views;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -59,6 +62,12 @@ public class MainActivity extends AppCompatActivity implements MainView, RecipeA
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
 
+    @Bind(R.id.toolbar_progress_bar)
+    ProgressBar mProgressBar;
+
+    @Bind(R.id.coordinator_layout)
+    CoordinatorLayout mCoordinatorLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements MainView, RecipeA
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        mProgressBar.setVisibility(View.VISIBLE);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Utilities.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -106,14 +116,14 @@ public class MainActivity extends AppCompatActivity implements MainView, RecipeA
             upload.enqueue(new Callback<ArrayList<Recipe>>() {
                 @Override
                 public void onResponse(Call<ArrayList<Recipe>> call, retrofit2.Response<ArrayList<Recipe>> response) {
-                    Log.i(LOG_TAG, String.valueOf(response.code()));
-                    Log.i(LOG_TAG, response.message());
-                    Log.i(LOG_TAG, String.valueOf(response.body().size()));
+                    mProgressBar.setVisibility(View.INVISIBLE);
+                    Snackbar.make(mCoordinatorLayout, getString(R.string.upload_success), Snackbar.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onFailure(Call<ArrayList<Recipe>> call, Throwable t) {
-
+                    mProgressBar.setVisibility(View.INVISIBLE);
+                    Snackbar.make(mCoordinatorLayout, getString(R.string.upload_failure), Snackbar.LENGTH_SHORT).show();
                 }
             });
 
@@ -124,6 +134,8 @@ public class MainActivity extends AppCompatActivity implements MainView, RecipeA
             download.enqueue(new Callback<ArrayList<Recipe>>() {
                 @Override
                 public void onResponse(Call<ArrayList<Recipe>> call, retrofit2.Response<ArrayList<Recipe>> response) {
+                    mProgressBar.setVisibility(View.INVISIBLE);
+                    Snackbar.make(mCoordinatorLayout, getString(R.string.download_success), Snackbar.LENGTH_SHORT).show();
                     ArrayList<Recipe> recipeList = response.body();
                     String json = new Gson().toJson(recipeList);
                     Utilities.writeToFile(json,mContext);
@@ -133,7 +145,8 @@ public class MainActivity extends AppCompatActivity implements MainView, RecipeA
 
                 @Override
                 public void onFailure(Call<ArrayList<Recipe>> call, Throwable t) {
-
+                    mProgressBar.setVisibility(View.INVISIBLE);
+                    Snackbar.make(mCoordinatorLayout, getString(R.string.download_failure), Snackbar.LENGTH_SHORT).show();
                 }
             });
         }

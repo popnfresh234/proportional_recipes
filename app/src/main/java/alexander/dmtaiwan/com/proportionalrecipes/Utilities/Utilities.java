@@ -2,6 +2,8 @@ package alexander.dmtaiwan.com.proportionalrecipes.Utilities;
 
 import android.app.Application;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -78,4 +80,15 @@ public class Utilities {
     public static int getRandomInt(Application application) {
         return ((ProportionalRecipes)application).getRandom().nextInt(9999999 - 0+1)+0;
     }
+
+    static public boolean isNetworkAvailable(Context c) {
+        ConnectivityManager cm =
+                (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+    }
+
+
 }
