@@ -18,6 +18,7 @@ public class Recipe implements Parcelable {
     private String name;
     private ArrayList<Ingredient> ingredientList;
     private int id;
+    private long time;
 
     public String getName() {
         return name;
@@ -43,6 +44,13 @@ public class Recipe implements Parcelable {
         this.id=id;
     }
 
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
 
 
     protected Recipe(Parcel in) {
@@ -54,6 +62,7 @@ public class Recipe implements Parcelable {
             ingredientList = null;
         }
         id = in.readInt();
+        time = in.readLong();
     }
 
     @Override
@@ -71,6 +80,7 @@ public class Recipe implements Parcelable {
             dest.writeList(ingredientList);
         }
         dest.writeInt(id);
+        dest.writeLong(time);
     }
 
     @SuppressWarnings("unused")

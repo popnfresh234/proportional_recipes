@@ -285,6 +285,7 @@ public class RecipeEditActivity extends AppCompatActivity implements AdapterList
             Log.i(LOG_TAG, "Editing Recipe");
             mRecipe.setName(mTitleEditText.getText().toString());
             mRecipe.setIngredientList(mIngredientList);
+            mRecipe.setTime(System.currentTimeMillis());
             mRecipeList.set(mRecipePosition, mRecipe);
             Collections.sort(mRecipeList, new RecipeComparator());
             for (int i = 0; i < mRecipeList.size(); i++) {
@@ -296,6 +297,7 @@ public class RecipeEditActivity extends AppCompatActivity implements AdapterList
             Log.i(LOG_TAG, "Adding New Recipe");
             mRecipe = new Recipe(mTitleEditText.getText().toString(), mIngredientList);
             mRecipe.setId(Utilities.getRandomInt(getApplication()));
+            mRecipe.setTime(System.currentTimeMillis());
             mRecipeList.add(mRecipe);
             Collections.sort(mRecipeList, new RecipeComparator());
             for (int i = 0; i < mRecipeList.size(); i++) {
@@ -310,6 +312,7 @@ public class RecipeEditActivity extends AppCompatActivity implements AdapterList
             mRecipeList = new ArrayList<Recipe>();
             mRecipe = new Recipe(mTitleEditText.getText().toString(), mIngredientList);
             mRecipe.setId(Utilities.getRandomInt(getApplication()));
+            mRecipe.setTime(System.currentTimeMillis());
             mRecipeList.add(mRecipe);
             Collections.sort(mRecipeList, new RecipeComparator());
             for (int i = 0; i < mRecipeList.size(); i++) {

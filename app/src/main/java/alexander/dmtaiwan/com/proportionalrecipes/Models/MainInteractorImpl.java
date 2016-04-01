@@ -64,14 +64,66 @@ public class MainInteractorImpl implements MainInteractor {
     }
 
     private void validateData(ArrayList<Recipe> localList, ArrayList<Recipe> remoteList) {
-        final ArrayList<Recipe> newRemoteList = new ArrayList<>();
+        final ArrayList<Recipe> editCheckedRemoteList = new ArrayList<>();
         //Populate new recipe list for upload
         for (Recipe recipe : remoteList) {
-            newRemoteList.add(recipe);
+            editCheckedRemoteList.add(recipe);
         }
 
-        //If local list is larger than remote list, add any new recipes, update local list with new recipes
-        //Loop through remote recipes and remove any recipes whose ID does not match those in updated localList as they must have been deleted
+        //Check for edits here
+        //Check for matches, if match check for difference in mod, if different edit has been done, replace in array
+        for (int i = 0; i < remoteList.size(); i++) {
+            Recipe remoteRecipe = remoteList.get(i);
+            for (int j = 0; j < localList.size(); j++) {
+                Recipe localRecipe = localList.get(j);
+                if (localRecipe.getId() == remoteRecipe.getId()) {
+                    if (localRecipe.getTime() != remoteRecipe.getTime()) {
+                        editCheckedRemoteList.set(i, localRecipe);
+                    }
+                }
+            }
+        }
+
+
+        //Loop through remote list and check for non matching IDs, these must be new
+        ArrayList<Recipe> newCheckedRemoteList = new ArrayList<>();
+        for (Recipe recipe : editCheckedRemoteList) {
+            newCheckedRemoteList.add(recipe);
+        }
+
+        for (int i = 0; i < localList.size(); i++) {
+            Recipe localRecipe = localList.get(i);
+            int match = 0;
+            for (int j = 0; j < editCheckedRemoteList.size(); j++) {
+                Recipe remoteRecipe = editCheckedRemoteList.get(j);
+                if (remoteRecipe.getId() == localRecipe.getId()) {
+                    match++;
+                }
+            }
+            if (match == 0) {
+                newCheckedRemoteList.add(localRecipe);
+            }
+        }
+        //Loop through remote list and check for non matching IDs, if not matched, remove
+        final ArrayList<Recipe> deleteCheckedRemoteList = new ArrayList<>();
+        for (Recipe recipe : newCheckedRemoteList) {
+            deleteCheckedRemoteList.add(recipe);
+        }
+
+        for (int i = 0; i < newCheckedRemoteList.size(); i++) {
+            Recipe remoteRecipe = newCheckedRemoteList.get(i);
+            int match = 0;
+            for (int j = 0; j < localList.size(); j++) {
+                Recipe localRecipe = localList.get(j);
+                if (remoteRecipe.getId() == localRecipe.getId()) {
+                    match++;
+                }
+            }
+            if (match == 0) {
+                deleteCheckedRemoteList.remove(i);
+            }
+        }
+
 
         //Upload Data
         Retrofit retrofit = new Retrofit.Builder()
@@ -80,20 +132,20 @@ public class MainInteractorImpl implements MainInteractor {
                 .build();
 
         RecipeService service = retrofit.create(RecipeService.class);
-        Call<ArrayList<Recipe>> upload = service.uploadRecipes(Utilities.JSON_ID, newRemoteList);
+        Call<ArrayList<Recipe>> upload = service.uploadRecipes(Utilities.JSON_ID, deleteCheckedRemoteList);
         upload.enqueue(new Callback<ArrayList<Recipe>>() {
             @Override
             public void onResponse(Call<ArrayList<Recipe>> call, retrofit2.Response<ArrayList<Recipe>> response) {
                 listener.hideLoading();
                 listener.makeSnackBar(context.getString(R.string.upload_success));
-                listener.onResult(newRemoteList);
+                listener.onResult(deleteCheckedRemoteList);
             }
 
             @Override
             public void onFailure(Call<ArrayList<Recipe>> call, Throwable t) {
                 listener.hideLoading();
                 listener.makeSnackBar(context.getString(R.string.upload_failure));
-                listener.onResult(newRemoteList);
+                listener.onResult(deleteCheckedRemoteList);
             }
         });
 
