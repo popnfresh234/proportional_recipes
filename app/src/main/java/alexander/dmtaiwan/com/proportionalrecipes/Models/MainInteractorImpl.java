@@ -70,20 +70,8 @@ public class MainInteractorImpl implements MainInteractor {
             newRemoteList.add(recipe);
         }
 
-        //Loop through localList and look for new recipes, add if new
-        for (int i = 0; i < localList.size(); i++) {
-            Recipe localRecipe = localList.get(i);
-            boolean contained = false;
-            for (int j = 0; j < remoteList.size(); j++) {
-                Recipe remoteRecipe = remoteList.get(j);
-                if (localRecipe.getId() == remoteRecipe.getId()) {
-                    contained = true;
-                }
-            }
-            if (!contained) {
-                newRemoteList.add(localRecipe);
-            }
-        }
+        //If local list is larger than remote list, add any new recipes, update local list with new recipes
+        //Loop through remote recipes and remove any recipes whose ID does not match those in updated localList as they must have been deleted
 
         //Upload Data
         Retrofit retrofit = new Retrofit.Builder()
