@@ -30,8 +30,8 @@ public class MainInteractorImpl implements MainInteractor {
     @Override
     public void fetchData() {
 
-        if (Utilities.doesFileExist(context)) {
-            String jsonRecipeList = Utilities.readFromFile(context);
+        if (Utilities.doesRecipeFileExist(context)) {
+            String jsonRecipeList = Utilities.readRecipesFromFile(context);
             ArrayList<Recipe> recipeList = Utilities.recipesFromJson(jsonRecipeList);
             listener.onResult(recipeList);
         } else {
@@ -169,7 +169,7 @@ public class MainInteractorImpl implements MainInteractor {
 
                 ArrayList<Recipe> recipeList = response.body();
                 String json = new Gson().toJson(recipeList);
-                Utilities.writeToFile(json, context);
+                Utilities.writeRecipesToFile(json, context);
                 listener.onResult(recipeList);
 
             }

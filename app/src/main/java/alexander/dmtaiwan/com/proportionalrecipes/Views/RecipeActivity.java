@@ -36,6 +36,7 @@ public class RecipeActivity extends AppCompatActivity implements IngredientAdapt
     private IngredientAdapter mAdapter;
     private ArrayList<Recipe> mRecipeList;
     private int mRecipePosition;
+    private Context mContext;
 
     @Bind(R.id.recycler_view)
     RecyclerView mRecyclerView;
@@ -52,7 +53,7 @@ public class RecipeActivity extends AppCompatActivity implements IngredientAdapt
         setContentView(R.layout.activity_recipe);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
-
+        mContext = this;
 
         mAdapter = new IngredientAdapter(mEmptyView, this, this, this);
         LinearLayoutManager llm = new LinearLayoutManager(this);
@@ -100,9 +101,22 @@ public class RecipeActivity extends AppCompatActivity implements IngredientAdapt
             public void onClick(DialogInterface dialog, int which) {
                 switch(which){
                     case DialogInterface.BUTTON_POSITIVE:
+                        //Write deleted recipe to file
+                        Recipe recipe = mRecipeList.get(mRecipePosition);
+                        ArrayList<Recipe> deletedRecipes = new ArrayList<>();
+                        if (Utilities.doesDeletedRecipesFileExist(mContext)) {
+                            String json = Utilities.readDeletedRecipesFromFile(mContext);
+                            deletedRecipes = Utilities.recipesFromJson(json);
+                            deletedRecipes.add(recipe);
+                            Utilities.writeDeletedRecipesToFile(new Gson().toJson(deletedRecipes), mContext);
+                        }else{
+                            deletedRecipes.add(recipe);
+                            Utilities.writeDeletedRecipesToFile(new Gson().toJson(deletedRecipes), mContext);
+                        }
+
                         mRecipeList.remove(mRecipePosition);
                         String jsonString = new Gson().toJson(mRecipeList);
-                        Utilities.writeToFile(jsonString, context);
+                        Utilities.writeRecipesToFile(jsonString, context);
                         finish();
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:

@@ -27,18 +27,19 @@ public class Utilities {
     public static final String EXTRA_RECIPES = "com.dmtaiwan.alexander.extra.recipe";
     public static final String EXTRA_RECIPE_POSITION = "com.dmtaiwan.alexander.extra.position";
     public static final String EXTRA_NEW_RECIPE = "com.dmtaiwan.alexander.extra.newrecipe";
-    public static final String FILE_NAME = "recipes.json";
+    public static final String FILE_NAME_RECIPES = "recipes.json";
+    public static final String FILE_NAME_DELETED = "deleted.json";
     public static final String BASE_URL = "https://jsonblob.com/";
     public static final String JSON_ID = "56f8e7e8e4b01190df592763";
 
-    static public boolean doesFileExist(Context context) {
-        File file = context.getFileStreamPath(FILE_NAME);
+    static public boolean doesRecipeFileExist(Context context) {
+        File file = context.getFileStreamPath(FILE_NAME_RECIPES);
         return file.exists();
     }
 
-    public static void writeToFile(String json, Context context) {
+    public static void writeRecipesToFile(String json, Context context) {
         try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(Utilities.FILE_NAME, Context.MODE_PRIVATE));
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(Utilities.FILE_NAME_RECIPES, Context.MODE_PRIVATE));
             outputStreamWriter.write(json);
             outputStreamWriter.close();
         } catch (FileNotFoundException e) {
@@ -48,10 +49,50 @@ public class Utilities {
         }
     }
 
-    public static String readFromFile(Context context) {
+    public static String readRecipesFromFile(Context context) {
         String json = "";
         try {
-            InputStream inputStream = context.openFileInput(Utilities.FILE_NAME);
+            InputStream inputStream = context.openFileInput(Utilities.FILE_NAME_RECIPES);
+            if (inputStream != null) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+                while ((receiveString = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(receiveString);
+                }
+                inputStream.close();
+                json = stringBuilder.toString();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
+    static public boolean doesDeletedRecipesFileExist(Context context) {
+        File file = context.getFileStreamPath(FILE_NAME_DELETED);
+        return file.exists();
+    }
+
+    public static void writeDeletedRecipesToFile(String json, Context context) {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(Utilities.FILE_NAME_DELETED, Context.MODE_PRIVATE));
+            outputStreamWriter.write(json);
+            outputStreamWriter.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String readDeletedRecipesFromFile(Context context) {
+        String json = "";
+        try {
+            InputStream inputStream = context.openFileInput(Utilities.FILE_NAME_DELETED);
             if (inputStream != null) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);

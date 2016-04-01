@@ -292,7 +292,7 @@ public class RecipeEditActivity extends AppCompatActivity implements AdapterList
                 Log.i(LOG_TAG, mRecipeList.get(i).getName());
             }
             jsonList = gson.toJson(mRecipeList);
-            Utilities.writeToFile(jsonList, mContext);
+            Utilities.writeRecipesToFile(jsonList, mContext);
         } else if (mRecipeList != null) {
             Log.i(LOG_TAG, "Adding New Recipe");
             mRecipe = new Recipe(mTitleEditText.getText().toString(), mIngredientList);
@@ -304,7 +304,7 @@ public class RecipeEditActivity extends AppCompatActivity implements AdapterList
                 Log.i(LOG_TAG, mRecipeList.get(i).getName());
             }
             jsonList = gson.toJson(mRecipeList);
-            Utilities.writeToFile(jsonList, mContext);
+            Utilities.writeRecipesToFile(jsonList, mContext);
         } else {
             //New Recipe
             Log.i(LOG_TAG, "First Recipe");
@@ -319,7 +319,7 @@ public class RecipeEditActivity extends AppCompatActivity implements AdapterList
                 Log.i(LOG_TAG, mRecipeList.get(i).getName());
             }
             jsonList = gson.toJson(mRecipeList);
-            Utilities.writeToFile(jsonList, mContext);
+            Utilities.writeRecipesToFile(jsonList, mContext);
         }
         finish();
     }
