@@ -63,65 +63,64 @@ public class MainInteractorImpl implements MainInteractor {
         });
     }
 
-    private void validateData(ArrayList<Recipe> localList, ArrayList<Recipe> remoteList) {
-        final ArrayList<Recipe> editCheckedRemoteList = new ArrayList<>();
-        //Populate new recipe list for upload
-        for (Recipe recipe : remoteList) {
-            editCheckedRemoteList.add(recipe);
+    private void validateData(ArrayList<Recipe> localList, final ArrayList<Recipe> remoteList) {
+
+        //Step 1 Remove any deleted recipes from remoteList;
+        ArrayList<Recipe> editableRemote = new ArrayList<>();
+        for (Recipe remoteRecipe : remoteList) {
+            editableRemote.add(remoteRecipe);
         }
 
-        //Check for edits here
-        //Check for matches, if match check for difference in mod, if different edit has been done, replace in array
-        for (int i = 0; i < remoteList.size(); i++) {
-            Recipe remoteRecipe = remoteList.get(i);
-            for (int j = 0; j < localList.size(); j++) {
-                Recipe localRecipe = localList.get(j);
+        if (Utilities.doesDeletedRecipesFileExist(context)) {
+            ArrayList<Recipe> deletedRecipes = Utilities.recipesFromJson(Utilities.readDeletedRecipesFromFile(context));
+            for (Recipe deletedRecipe : deletedRecipes) {
+                for (Recipe remoteRecipe : editableRemote) {
+                    if (deletedRecipe.getId() == remoteRecipe.getId()) {
+                        int pos = remoteList.indexOf(remoteRecipe);
+                        remoteList.remove(pos);
+                    }
+                }
+            }
+            //zero out deleted Recipes
+            ArrayList<Recipe> emptyArray = new ArrayList<>();
+            String json = new Gson().toJson(emptyArray);
+            Utilities.writeDeletedRecipesToFile(json, context);
+        }
+
+        //Step 2 Replace any edited recipes in remoteList;
+        for (Recipe remoteRecipe : remoteList) {
+            for (Recipe localRecipe : localList) {
                 if (localRecipe.getId() == remoteRecipe.getId()) {
-                    if (localRecipe.getTime() != remoteRecipe.getTime()) {
-                        editCheckedRemoteList.set(i, localRecipe);
+                    if (localRecipe.getTime() > remoteRecipe.getTime()) {
+                        int pos = remoteList.indexOf(remoteRecipe);
+                        remoteList.set(pos, localRecipe);
                     }
                 }
             }
         }
 
 
-        //Loop through remote list and check for non matching IDs, these must be new
-        ArrayList<Recipe> newCheckedRemoteList = new ArrayList<>();
-        for (Recipe recipe : editCheckedRemoteList) {
-            newCheckedRemoteList.add(recipe);
+        //Step 3 Add any new recipes to remoteList;
+        ArrayList<Recipe> editableRemoteList = new ArrayList<>();
+        for (Recipe remoteRecipe : remoteList) {
+            editableRemoteList.add(remoteRecipe);
         }
 
-        for (int i = 0; i < localList.size(); i++) {
-            Recipe localRecipe = localList.get(i);
+        for (Recipe localRecipe : localList) {
             int match = 0;
-            for (int j = 0; j < editCheckedRemoteList.size(); j++) {
-                Recipe remoteRecipe = editCheckedRemoteList.get(j);
-                if (remoteRecipe.getId() == localRecipe.getId()) {
+            for (Recipe remoteRecipe : editableRemoteList) {
+                if (localRecipe.getId() == remoteRecipe.getId()) {
                     match++;
                 }
             }
             if (match == 0) {
-                newCheckedRemoteList.add(localRecipe);
+                remoteList.add(localRecipe);
             }
-        }
-        //Loop through remote list and check for non matching IDs, if not matched, remove
-        final ArrayList<Recipe> deleteCheckedRemoteList = new ArrayList<>();
-        for (Recipe recipe : newCheckedRemoteList) {
-            deleteCheckedRemoteList.add(recipe);
         }
 
-        for (int i = 0; i < newCheckedRemoteList.size(); i++) {
-            Recipe remoteRecipe = newCheckedRemoteList.get(i);
-            int match = 0;
-            for (int j = 0; j < localList.size(); j++) {
-                Recipe localRecipe = localList.get(j);
-                if (remoteRecipe.getId() == localRecipe.getId()) {
-                    match++;
-                }
-            }
-            if (match == 0) {
-                deleteCheckedRemoteList.remove(i);
-            }
+        ArrayList<Recipe> referenceLocalList = new ArrayList<>();
+        for (Recipe localRecipe : localList) {
+            referenceLocalList.add(localRecipe);
         }
 
 
@@ -132,20 +131,20 @@ public class MainInteractorImpl implements MainInteractor {
                 .build();
 
         RecipeService service = retrofit.create(RecipeService.class);
-        Call<ArrayList<Recipe>> upload = service.uploadRecipes(Utilities.JSON_ID, deleteCheckedRemoteList);
+        Call<ArrayList<Recipe>> upload = service.uploadRecipes(Utilities.JSON_ID, remoteList);
         upload.enqueue(new Callback<ArrayList<Recipe>>() {
             @Override
             public void onResponse(Call<ArrayList<Recipe>> call, retrofit2.Response<ArrayList<Recipe>> response) {
                 listener.hideLoading();
                 listener.makeSnackBar(context.getString(R.string.upload_success));
-                listener.onResult(deleteCheckedRemoteList);
+                listener.onResult(remoteList);
             }
 
             @Override
             public void onFailure(Call<ArrayList<Recipe>> call, Throwable t) {
                 listener.hideLoading();
                 listener.makeSnackBar(context.getString(R.string.upload_failure));
-                listener.onResult(deleteCheckedRemoteList);
+                listener.onResult(remoteList);
             }
         });
 

@@ -60,6 +60,6 @@ public class MainPresenterImpl implements MainPresenter, MainInteractorImpl.Main
 
     @Override
     public void makeSnackBar(String message) {
-
+        mainView.makeSnackbar(message);
     }
 }
