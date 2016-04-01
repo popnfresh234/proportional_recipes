@@ -64,6 +64,29 @@ public class MainInteractorImpl implements MainInteractor {
     }
 
     private void validateData(ArrayList<Recipe> localList, final ArrayList<Recipe> remoteList) {
+        //Remove any remotely deleted recipes
+        if (remoteList.size() > 0) {
+            ArrayList<Recipe> referenceLocal = new ArrayList<>();
+            for (Recipe recipe : localList) {
+                referenceLocal.add(recipe);
+            }
+
+            ArrayList<Recipe> remoteDeletedRecipes = remoteList.get(0).getDeletedRecipes();
+            if(remoteDeletedRecipes!= null) {
+                for (Recipe remoteDeleteRecipe : remoteDeletedRecipes) {
+                    for (Recipe localRecipe : referenceLocal) {
+                        if (remoteDeleteRecipe.getId() == localRecipe.getId()) {
+                            int pos = localList.indexOf(localRecipe);
+                            localList.remove(pos);
+                        }
+                    }
+                }
+            }
+            for (Recipe recipe : remoteList) {
+                recipe.setDeletedRecipes(null);
+            }
+        }
+
 
         //Step 1 Remove any deleted recipes from remoteList;
         ArrayList<Recipe> editableRemote = new ArrayList<>();
@@ -75,6 +98,7 @@ public class MainInteractorImpl implements MainInteractor {
             ArrayList<Recipe> deletedRecipes = Utilities.recipesFromJson(Utilities.readDeletedRecipesFromFile(context));
             for (Recipe deletedRecipe : deletedRecipes) {
                 for (Recipe remoteRecipe : editableRemote) {
+                    remoteRecipe.setDeletedRecipes(deletedRecipes);
                     if (deletedRecipe.getId() == remoteRecipe.getId()) {
                         int pos = remoteList.indexOf(remoteRecipe);
                         remoteList.remove(pos);

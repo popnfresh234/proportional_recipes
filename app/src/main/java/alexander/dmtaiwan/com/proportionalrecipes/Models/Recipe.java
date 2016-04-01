@@ -19,6 +19,7 @@ public class Recipe implements Parcelable {
     private ArrayList<Ingredient> ingredientList;
     private int id;
     private long time;
+    private ArrayList<Recipe> deletedRecipes;
 
     public String getName() {
         return name;
@@ -52,6 +53,18 @@ public class Recipe implements Parcelable {
         this.time = time;
     }
 
+    public ArrayList<Recipe> getDeletedRecipes() {
+        return deletedRecipes;
+    }
+
+    public void setDeletedRecipes(ArrayList<Recipe> deletedRecipes) {
+        this.deletedRecipes = deletedRecipes;
+    }
+
+
+
+
+
 
     protected Recipe(Parcel in) {
         name = in.readString();
@@ -63,6 +76,12 @@ public class Recipe implements Parcelable {
         }
         id = in.readInt();
         time = in.readLong();
+        if (in.readByte() == 0x01) {
+            deletedRecipes = new ArrayList<Recipe>();
+            in.readList(deletedRecipes, Recipe.class.getClassLoader());
+        } else {
+            deletedRecipes = null;
+        }
     }
 
     @Override
@@ -81,6 +100,12 @@ public class Recipe implements Parcelable {
         }
         dest.writeInt(id);
         dest.writeLong(time);
+        if (deletedRecipes == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(deletedRecipes);
+        }
     }
 
     @SuppressWarnings("unused")
