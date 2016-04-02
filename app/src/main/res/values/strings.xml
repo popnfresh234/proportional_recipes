@@ -4,7 +4,7 @@
     <!--Menu Strings-->
     <string name="action_edit">Edit</string>
     <string name="action_delete">Delete</string>
-    <string name="action_upload">Upload Recipes</string>
+    <string name="action_sync">Sync Recipes</string>
     <string name="action_download">Download Recipes</string>
 
 

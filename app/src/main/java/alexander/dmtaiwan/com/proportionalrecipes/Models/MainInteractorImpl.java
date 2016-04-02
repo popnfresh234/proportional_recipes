@@ -5,8 +5,10 @@ import android.content.Context;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import alexander.dmtaiwan.com.proportionalrecipes.R;
+import alexander.dmtaiwan.com.proportionalrecipes.Utilities.RecipeComparator;
 import alexander.dmtaiwan.com.proportionalrecipes.Utilities.RecipeService;
 import alexander.dmtaiwan.com.proportionalrecipes.Utilities.Utilities;
 import retrofit2.Call;
@@ -142,11 +144,10 @@ public class MainInteractorImpl implements MainInteractor {
             }
         }
 
-        ArrayList<Recipe> referenceLocalList = new ArrayList<>();
-        for (Recipe localRecipe : localList) {
-            referenceLocalList.add(localRecipe);
-        }
-
+        //Sort data and write to SD card
+        Collections.sort(remoteList, new RecipeComparator());
+        String json = new Gson().toJson(remoteList);
+        Utilities.writeRecipesToFile(json, context);
 
         //Upload Data
         Retrofit retrofit = new Retrofit.Builder()

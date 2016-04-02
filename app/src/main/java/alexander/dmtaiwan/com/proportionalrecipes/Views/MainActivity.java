@@ -1,6 +1,5 @@
 package alexander.dmtaiwan.com.proportionalrecipes.Views;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -27,8 +26,6 @@ import alexander.dmtaiwan.com.proportionalrecipes.Utilities.RecipeAdapter;
 import alexander.dmtaiwan.com.proportionalrecipes.Utilities.Utilities;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
 
 
 public class MainActivity extends AppCompatActivity implements MainView, RecipeAdapter.RecyclerClickListener, View.OnClickListener {
@@ -38,9 +35,6 @@ public class MainActivity extends AppCompatActivity implements MainView, RecipeA
     private RecipeAdapter mAdapter;
     private MainPresenter mPresenter;
     private ArrayList<Recipe> mRecipeList;
-    private Context mContext;
-    public static MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    private OkHttpClient mClient;
 
 
     @Bind(R.id.recycler_view)
@@ -75,8 +69,6 @@ public class MainActivity extends AppCompatActivity implements MainView, RecipeA
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(llm);
         mRecyclerView.setAdapter(mAdapter);
-        mContext = this;
-        mClient = new OkHttpClient();
     }
 
     @Override
@@ -99,14 +91,14 @@ public class MainActivity extends AppCompatActivity implements MainView, RecipeA
         int id = item.getItemId();
         mProgressBar.setVisibility(View.VISIBLE);
 
-        if (id == R.id.action_upload) {
+        if (id == R.id.action_sync) {
             mPresenter.uploadData(mRecipeList, this);
 
         }
 
-        if (id == R.id.action_download) {
-            mPresenter.downloadData(mRecipeList, this);
-        }
+//        if (id == R.id.action_download) {
+//            mPresenter.downloadData(mRecipeList, this);
+//        }
         return super.onOptionsItemSelected(item);
     }
 
